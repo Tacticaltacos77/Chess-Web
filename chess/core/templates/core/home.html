@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Chess — Home{% endblock %}
+
+{% block content %}
+    <h1>Welcome to Chess</h1>
+    <p>Sharpen your game with random puzzles, or jump into a match.</p>
+    <p><a href="{% url 'random-puzzle' %}">Try a random puzzle &rarr;</a></p>
+{% endblock %}

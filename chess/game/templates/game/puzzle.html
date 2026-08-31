@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load django_vite %}
+
+{% block title %}Random Puzzle{% endblock %}
+
+{% block extra_head %}
+    {% vite_asset 'src/puzzle/main.js' %}
+{% endblock %}
+
+{% block content %}
+    <h1>Random Puzzle</h1>
+    <div id="board"
+         data-fen="{{ 'start' }}"
+         data-pieces="{{ request.user.board_settings.pieces_style|default:'standard' }}"
+         data-board="{{ request.user.board_settings.board_style|default:'default' }}"
+         style="width: 100%; max-width: 1000px;"></div>
+{% endblock %}

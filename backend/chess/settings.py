@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'core',
     'users',
     'game',
-    'api',
+    'puzzle', 
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -128,7 +128,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# Vite builds into BASE_DIR/static/dist/ (see frontend/vite.config.js).
+# Vite builds into BASE_DIR/static/dist/ (see ../frontend/vite.config.js).
 DJANGO_VITE = {
     'default': {
         'dev_mode': False,
@@ -136,3 +136,9 @@ DJANGO_VITE = {
         'manifest_path': BASE_DIR / 'static' / 'dist' / '.vite' / 'manifest.json',
     }
 }
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+}
+

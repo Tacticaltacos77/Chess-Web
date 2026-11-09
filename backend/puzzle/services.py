@@ -9,22 +9,23 @@ MAX_OFFSET = 800
 MIN_OFFSET = 100
 
 def pick_puzzle(puzzles: QuerySet[Puzzle], rating: int) -> None | Puzzle:
-    puzzle = None
+    potential_puzzles = None
     offset = MIN_OFFSET
-    while not puzzle and offset <= MAX_OFFSET:
-        puzzle = puzzles.filter(rating__range=(rating-offset, rating+offset))
+    while offset <= MAX_OFFSET:
+        potential_puzzles = puzzles.filter(rating__range=(rating-offset, rating+offset))
+        if potential_puzzles.exists():
+            return potential_puzzles.order_by("?").first()
         offset+=100
-    if not puzzle:
-        return None
-    return puzzle.order_by("?").first()
+    return None
 
 
 # FUTURE MAKE THE PUZZLES DYNAMIC IN RATING AS WELL
 @transaction.atomic
 def update_puzzle_ratings(user: User, puzzle: Puzzle, result: int) -> tuple[int, int]:
-    user_rating, _ = Rating.objects.select_for_update().get_or_create(user=user, game_mode=Rating.GameMode.PUZZLE)
+    rating, _ = Rating.objects.select_for_update().get_or_create(user=user, game_mode=Rating.GameMode.PUZZLE)
     puzzle = Puzzle.objects.get(pk=puzzle.pk) 
-    new_user_rating, _ = new_ratings(user_rating.value, puzzle.rating, result)
-    user_rating.value = new_user_rating
-    user_rating.save(update_fields=["value"])
-    return new_user_rating, new_user_rating - user_rating.value
+    old_rating_value = rating.value
+    new_rating_value, _ = new_ratings(old_rating_value, puzzle.rating, result)
+    rating.value = new_rating_value
+    rating.save(update_fields=["value"])
+    return new_rating_value, new_rating_value - old_rating_value

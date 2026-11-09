@@ -8,10 +8,27 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Random Puzzle</h1>
-    <div id="board"
-         data-fen="{{ 'start' }}"
-         data-pieces="{{ request.user.board_settings.pieces_style|default:'standard' }}"
-         data-board="{{ request.user.board_settings.board_style|default:'default' }}"
-         style="width: 100%; max-width: 1000px;"></div>
+    <div class="puzzle-layout">
+        <div id="board"
+             data-pieces="{{ request.user.board_settings.pieces_style|default:'standard' }}"
+             data-board="{{ request.user.board_settings.board_style|default:'default' }}"></div>
+        <aside class="side-panel">
+            <section class="play-puzzle">
+                <header class="side-panel-header"><h2>Random Puzzle</h2></header>
+                <div class="side-panel-body">
+                    <label>Rated
+                        <button type="button" role="switch" class="toggle-button" id="puzzle-rated-toggle"><span class="toggle-knob"></button>
+                    </label>
+                </div>
+                <footer class ="side-panel-footer"> 
+                    <button type="button" id="play-button" class="play-button">Play</button>
+                </footer>
+            <section>
+            <div class="in-progress">
+                <h2>Puzzle</h2>
+                <p id="puzzle-status">Find the best move.</p>
+            </div>
+        </aside> 
+
+    </div>
 {% endblock %}

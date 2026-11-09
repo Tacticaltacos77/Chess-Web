@@ -1,0 +1,33 @@
+* {
+    box-sizing: border-box;
+}
+
+.toggle-button {
+    display: inline-flex;
+    width: 3rem; 
+    height: 1.5rem;
+    border: none;
+    padding: 0;
+    vertical-align: center;
+    margin: 0 .5rem;
+    border-radius: 100px;
+    transition: background-color .2s;
+}
+
+.toggle-button[selected="true"] {
+    background-color: var(--board-dark);
+    & .toggle-knob {
+        transform: translateX(1.5rem);
+        background-color: var(--board-light);
+    }
+}
+
+
+.toggle-knob {
+    height: 100%; 
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: grey;
+    transition: transform .2s ease; 
+}
+

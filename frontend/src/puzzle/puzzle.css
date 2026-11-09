@@ -1,0 +1,60 @@
+main.site-main {
+    max-width: 1800px;
+    padding: 1rem 1.5rem;
+}
+
+.puzzle-layout {
+    --panel-width: clamp(300px, 28vw, 480px);
+    --gap: 1.5rem;
+    display: flex;
+    gap: var(--gap);
+    justify-content: center;
+}
+
+.puzzle-layout #board {
+    flex: none;
+    width: min(calc(100vh - 6rem), calc(100% - var(--panel-width) - var(--gap)));
+}
+
+.puzzle-panel {
+    flex: none;
+    width: var(--panel-width);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem; 
+    display: flex;
+    flex-direction: column;
+    & .puzzle-side-panel-title {
+        margin: 0;
+        background-color: var(--board-dark);
+        display: block;
+        font-size: 3rem;
+    }
+}
+
+.play-button {
+    margin-top: auto;  
+    padding: 0.9rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+aside[hidden] {
+    display: none;
+}
+
+.play-button:hover {
+    filter: brightness(1.1);
+}
+
+@media (max-width: 768px) {
+    .puzzle-layout { flex-direction: column; }
+    .puzzle-layout #board,
+    .puzzle-panel { width: 100%; }
+}

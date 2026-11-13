@@ -21,6 +21,14 @@
             <a href="{% url 'play' %}">Play</a>
             <a href="{% url 'puzzle' %}">Puzzles</a>
         </nav>
+        <div class="sidebar-auth-footer">
+        {% if user.is_authenticated %}
+        
+        {% else %}
+            <a href="{% url 'register' %}">Register</a>
+            <a href="" class="login-btn">Log In</a>
+        {% endif %}
+        </div>
     </header>
     <div class="site-content">
         <main class="site-main">
@@ -28,7 +36,7 @@
         </main>
     
         <footer class="site-footer">
-            {% block footer %}&copy; {% now "Y" %} Chess{% endblock %}
+            {% block footer %}{% endblock %}
         </footer>
     </div>
 

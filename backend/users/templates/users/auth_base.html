@@ -1,0 +1,32 @@
+{% load django_vite %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    {% vite_hmr_client %}
+    <link rel="stylesheet" href="{% vite_asset_url 'src/base/base.css'%}">
+    <link rel="stylesheet" href="{% vite_asset_url 'src/users/auth_base.css' %}">
+</head>
+<body>
+    <header class="auth-header">
+        <a href="{% url 'home' %}" class="brand">Chess<span class="brand-icon brand-icon-large"></span></a>
+    </header>
+    <main class="auth-card">
+        <h1 class="auth-title">{% block heading %}{% endblock %}</h1>
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="form-field">
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="auth-submit-btn">{% block submit_label %}{% endblock %}</button>
+        </form>
+        <p class="auth-switch">{% block switch_link %}{% endblock %}</p>
+    </main>
+</body>
+</html>

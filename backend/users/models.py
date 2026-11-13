@@ -1,11 +1,19 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
-DEFAULT_RATING = 1000
+from django.core.validators import MinLengthValidator, RegexValidator
 
 class User(AbstractUser):
-    elo_rating = models.PositiveIntegerField(default=1200)
-    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+    username = models.CharField(
+        unique=True, 
+        max_length=20, 
+        validators=(
+            MinLengthValidator(3),
+            RegexValidator(r"^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]\Z", "Letters and numbers allowed, underscores and "
+            "hyphens allowed if not at start and end")       
+            )
+        )
+    email = models.EmailField(unique=True)
+
 
 class BoardSettings(models.Model):
     pieces_style = models.CharField(max_length=32, default="classic")
@@ -15,17 +23,3 @@ class BoardSettings(models.Model):
         on_delete=models.CASCADE,
         related_name="board_settings",
     )
-
-class Rating(models.Model):
-    class GameMode(models.TextChoices):
-        PUZZLE = "puzzle", "Puzzle"
-        BLITZ = "blitz", "Blitz"
-        RAPID = "rapid", "Rapid"
-        BULLET = "bullet", "Bullet"
-    game_mode = models.CharField(max_length=8, choices=GameMode.choices)
-    value = models.PositiveSmallIntegerField(default=DEFAULT_RATING)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ratings")
-    class Meta:
-        constraints = (
-            models.UniqueConstraint(fields=("user", "game_mode"), name="unique_rating_per_user_game_mode"),
-        )

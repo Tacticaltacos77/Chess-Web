@@ -2,55 +2,21 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import AllowAny
-from rest_framework import status
 
-from django.db import transaction, IntegrityError
-from users.models import User, Rating
-from .models import Puzzle, PuzzleAttempt
-from .serializers import PuzzleSerialzier, PuzzleSubmitSerializer
-from users.ratings import get_rating
-from .services import pick_puzzle, update_puzzle_ratings
+from .models import Puzzle
+from .serializers import PuzzleSerialzier
+from .services import pick_puzzle
 
-class RandomRankedPuzzleView(APIView):
-    def get(self, request):
-        rating = get_rating(request.user, Rating.GameMode.PUZZLE)
-        puzzles = Puzzle.objects.exclude(attempts__user = request.user)
-        puzzle = pick_puzzle(puzzles, rating)
-        if puzzle is None:
-            raise NotFound("No puzzles available")
-        attempt, _ = PuzzleAttempt.objects.get_or_create(user=request.user, status=PuzzleAttempt.Status.IN_PROGRESS, defaults={"puzzle": puzzle})
-        return Response(PuzzleSerialzier(attempt.puzzle).data)
-    
-class PuzzleRankedAttemptView(APIView):
-    @transaction.atomic(savepoint=False)
-    def post(self, request, pk):
-        serializer = PuzzleSubmitSerializer(data = request.data)
-        serializer.is_valid(raise_exception=True)
-        attempt = PuzzleAttempt.objects.select_for_update().filter(user= request.user, puzzle=pk).first()
 
-        if attempt is None:
-            return Response({"detail": "Not the user's currently active puzzle."}, status=status.HTTP_409_CONFLICT)
-        
-        if attempt.status != PuzzleAttempt.Status.IN_PROGRESS:
-            return Response({"status": attempt.status})
-        
-        data = serializer.validated_data
-        assert isinstance(data, dict)
-        
-        attempt.status = data["result"]
-        attempt.save(update_fields=["status"])
-        result = 1 if attempt.status == "solved" else 0
-
-        new_rating, change = update_puzzle_ratings(request.user, attempt.puzzle, result)
-        return Response({"status": attempt.status, "rating": new_rating, "change": change})
-            
 class RandomCasualPuzzleView(APIView):
-    DIFFICULTY_OFFSET = {"easist": -600, "eaiser": -300, "normal":0, "harder":300, "hardest": 600}
+    DIFFICULTIES = {"easiest": 400, "easiser": 800, "normal":1200, "harder":1600, "hardest": 2000}
+    permission_classes = [AllowAny]
 
     def get(self, request):
-        user_rating = get_rating(request.user, Rating.GameMode.PUZZLE)
+        query = request.query_params.get("difficulty", "normal")
         puzzles = Puzzle.objects.all()
-        puzzle = pick_puzzle(puzzles, user_rating)
+        difficulty = self.DIFFICULTIES.get(query, self.DIFFICULTIES["normal"])
+        puzzle = pick_puzzle(puzzles, difficulty)
         if puzzle is None:
             raise NotFound("No puzzles available")
         return Response(PuzzleSerialzier(puzzle).data)

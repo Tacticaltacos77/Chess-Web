@@ -47,7 +47,7 @@ body {
     gap: 0.35rem;
     
 
-    & input[name="username"] {
+    & input[name="username"], & input[name="account"] {
         background: url("@/assets/icons/user-round.svg") 0.5rem center / 1.1rem no-repeat;
     }
 

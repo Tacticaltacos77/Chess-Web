@@ -16,17 +16,19 @@
             <span class="brand-icon"></span>
             Chess
         </a>
-        <nav class="site-nav">
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'play' %}">Play</a>
-            <a href="{% url 'puzzle' %}">Puzzles</a>
+        {% with current=request.resolver_match.url_name %}
+        <nav class="site-nav" aria-label="Main">
+            <a href="{% url 'home' %}" {% if current == 'home' %}aria-current="page"{% endif %}>Home</a>
+            <a href="{% url 'play' %}" {% if current == 'play' %}aria-current="page"{% endif %}>Play</a>
+            <a href="{% url 'puzzle' %}" {% if current == 'puzzle' %}aria-current="page"{% endif %}>Puzzles</a>
         </nav>
+        {% endwith %}
         <div class="sidebar-auth-footer">
         {% if user.is_authenticated %}
-        
+
         {% else %}
-            <a href="{% url 'register' %}">Register</a>
-            <a href="" class="login-btn">Log In</a>
+            <a href="{% url 'register' %}" class="sidebar-btn sidebar-register-btn">Register</a>
+            <a href="{% url 'login' %}" class="sidebar-btn sidebar-login-btn">Log In</a>
         {% endif %}
         </div>
     </header>

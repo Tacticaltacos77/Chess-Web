@@ -1,9 +1,28 @@
 {% extends "base.html" %}
+{% load django_vite %}
 
-{% block title %}Chess — Home{% endblock %}
+{% block title %}Chess - Home{% endblock %}
+
+{% block extra_head %}
+    {% vite_asset 'src/home/home.js' %}
+{% endblock %}
 
 {% block content %}
-    <h1>Welcome to Chess</h1>
-    <p>Sharpen your game with random puzzles, or jump into a match.</p>
-    <p><a href="{% url 'puzzle' %}">Try a random puzzle &rarr;</a></p>
+    <section class="home-hero">
+        <div class="home-hero-text">
+            <h1 class="home-title">Sharpen your tactics, one puzzle at a time.</h1>
+            <p class="home-tagline">Solve chess puzzles taken from real games, right in your browser. Find the winning move, then go again.</p>
+            <div class="home-actions">
+                <a class="home-btn home-btn-primary" href="{% url 'puzzle' %}">Solve a puzzle</a>
+                {% if not user.is_authenticated %}
+                    <a class="home-btn home-btn-secondary" href="{% url 'register' %}">Create an account</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <figure class="home-board">
+            <div id="home-board"></div>
+            <figcaption>Morphy's Opera Game, 1858.</figcaption>
+        </figure>
+    </section>
 {% endblock %}

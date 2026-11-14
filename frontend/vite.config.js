@@ -16,7 +16,8 @@ export default defineConfig({
         emptyOutDir: true,
         rollupOptions: {
             input: {
-                base: "src/base/base.css", 
+                base: "src/base/base.css",
+                home: "src/home/home.js",
                 puzzle: "src/puzzle/main.js",
                 game: "src/game/game.js",
             },

@@ -1,0 +1,5 @@
+/* Same selector shape as cm-chessboard's marker styles, so specificity matches */
+.cm-chessboard .markers .marker.marker-last-move {
+    fill: #f7d84b;
+    opacity: 0.45;
+}

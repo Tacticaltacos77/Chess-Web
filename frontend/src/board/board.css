@@ -3,3 +3,8 @@
     fill: #f7d84b;
     opacity: 0.45;
 }
+
+.cm-chessboard .markers .marker.marker-check {
+    fill: #e5383b;
+    opacity: 0.6;
+}

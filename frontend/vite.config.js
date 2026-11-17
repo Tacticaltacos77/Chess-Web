@@ -5,6 +5,11 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
     // Assets are served by Django out of backend/static/dist/
     base: "/static/dist/",
+    server: {
+        // Pages come from Django (:8000), so in dev, imported assets (sounds, images)
+        // need the full Vite URL or the browser asks Django for them and gets a 404
+        origin: "http://localhost:5173",
+    },
     resolve: {
         alias: {
             "@": fileURLToPath(new URL("./src", import.meta.url)),

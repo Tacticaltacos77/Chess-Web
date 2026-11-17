@@ -7,7 +7,11 @@ import "cm-chessboard/assets/extensions/markers/markers.css";
 import "cm-chessboard/assets/extensions/promotion-dialog/promotion-dialog.css";
 import "./board.css";
 
+import heavySoundURL from "@/assets/board/sounds/heavy.mp3";
+import lightSoundURL from "@/assets/board/sounds/light.mp3";
+
 const LAST_MOVE_MARKER = { class: "marker-last-move", slice: "markerSquare" };
+const CHECK_MARKER = { class: "marker-check", slice: "markerSquare" };
 
 const PIECE_SETS = ["standard", "staunty"];
 const DEFAULT_PIECES = "standard";
@@ -15,6 +19,14 @@ const DEFAULT_PIECES = "standard";
 
 const BOARD_SETS = ["default", "default-contrast", "green", "blue", "chess-club", "black-and-white"];
 const DEFAULT_BOARD = "default";
+
+
+const CAPTURE_SOUND = new Audio(heavySoundURL);
+const MOVE_SOUND = new Audio(lightSoundURL);
+
+const SOUND_VOLUME = 0.25;
+CAPTURE_SOUND.volume = SOUND_VOLUME;
+MOVE_SOUND.volume = SOUND_VOLUME;
 
 export class BoardSession {
     constructor(element, { pieces, board } = {}) {
@@ -41,15 +53,31 @@ export class BoardSession {
     }
 
     makeMove(move) {
-        this.game.move(move);
-        console.log(move);
+        const moveObj = this.game.move(move);
+
+        const sound = moveObj.isCapture() ? CAPTURE_SOUND : MOVE_SOUND;
+
+        sound.currentTime = 0;
+        sound.play().catch((err) => console.warn("Move sound didn't play:", err));
+
         this.syncBoard();
+        return moveObj;
     }
 
-    // Use this instead of setPosition so the last-move highlight never falls behind
+  
     syncBoard(animate = true) {
         this.board.setPosition(this.game.fen(), animate);
         this.showLastMove();
+        this.showCheck();
+    }
+
+    showCheck() {
+        this.board.removeMarkers(CHECK_MARKER);
+        if (!this.game.inCheck()) return;
+
+        // The side to move is always the one in check
+        const [kingSquare] = this.game.findPiece({ type: "k", color: this.game.turn() });
+        this.board.addMarker(CHECK_MARKER, kingSquare);
     }
 
     showLastMove() {
@@ -101,57 +129,46 @@ export class BoardSession {
         return true;
     }
     onValidate(event){
-        // A promotion can't be played until the user picks a piece,
-        // so allow the drop now and play it once the dialog answers
-        if (this.isPromotion(event.squareFrom, event.squareTo)) {
-            this.pendingPromotion = { from: event.squareFrom, to: event.squareTo };
-            return true;
-        }
-        try {
-            this.game.move({ from: event.squareFrom, to: event.squareTo });
-        } catch {
-            return false;
-        }
-        return true;
+
+        const matched_moves = this.game.moves({square: event.squareFrom, verbose: true})
+            .filter((m)=> m.to === event.squareTo); 
+        return matched_moves.length !==0;
     }
 
     onMoveCancel(event){
         this.board.removeLegalMovesMarkers();
     }
 
-    onMoveFinish(event){
+    async onMoveFinish(event){
         this.board.removeLegalMovesMarkers();
         if (!event.legalMove) return;
 
-        if (this.pendingPromotion) {
-            const { from, to } = this.pendingPromotion;
-            this.pendingPromotion = null;
-            this.askPromotion(from, to);
-            return;
+        const { squareFrom: from, squareTo: to } = event;
+        let promotion;
+        if (this.isPromotion(from, to)) {
+            promotion = await this.askPromotion(to);
+            // Canceled
+            if (!promotion) return this.syncBoard();
         }
-        // onValidate already played it in chess.js, so it's the last move in the history
-        this.onUserMove(this.game.history({ verbose: true }).at(-1));
+        this.onUserMove(this.makeMove({ from, to, promotion }));
     }
+
+    // Subclasses override this to react to the users moves
+    onUserMove(move) {}
 
     isPromotion(from, to){
         return this.game.moves({ square: from, verbose: true })
             .some((move) => move.to === to && move.promotion);
     }
 
-    askPromotion(from, to){
-        this.board.showPromotionDialog(to, this.game.turn(), (result) => {
-            if (result.type === PROMOTION_DIALOG_RESULT_TYPE.pieceSelected) {
+    // Resolves with the picked piece ("q", "r", "b", "n"), or null if the user cancels
+    askPromotion(square){
+        return new Promise((resolve) => {
+            this.board.showPromotionDialog(square, this.game.turn(), (result) => {
+                const picked = result.type === PROMOTION_DIALOG_RESULT_TYPE.pieceSelected;
                 // result.piece is like "wq"; chess.js wants just the "q"
-                const move = this.game.move({ from, to, promotion: result.piece.charAt(1) });
-                this.onUserMove(move);
-            } else {
-                this.syncBoard();
-            }
+                resolve(picked ? result.piece.charAt(1) : null);
+            });
         });
     }
-
-    // Subclasses override this. Runs once a user's move is fully played, promotions included
-    onUserMove(move){
-        this.syncBoard();
-    }
-}
+};

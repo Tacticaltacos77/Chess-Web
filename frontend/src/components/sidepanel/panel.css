@@ -70,6 +70,31 @@
     font-size: 0.85rem;
 }
 
+.side-panel-bottom {
+    margin-top: auto;
+}
+
+.panel-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.panel-select {
+    padding: 0.7rem 0.8rem;
+    font: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+    }
+}
+
 .side-panel-footer {
     display: flex;
     gap: 0.5rem;

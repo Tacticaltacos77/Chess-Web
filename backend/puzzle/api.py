@@ -9,7 +9,7 @@ from .services import pick_puzzle
 
 
 class RandomCasualPuzzleView(APIView):
-    DIFFICULTIES = {"easiest": 400, "easiser": 800, "normal":1200, "harder":1600, "hardest": 2000}
+    DIFFICULTIES = {"easiest": 400, "easier": 800, "normal":1200, "harder":1600, "hardest": 2000}
     permission_classes = [AllowAny]
 
     def get(self, request):

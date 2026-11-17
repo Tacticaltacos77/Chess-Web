@@ -1,0 +1,11 @@
+
+<div class="panel-field{% if pinned %} side-panel-bottom{% endif %}">
+    <label class="side-panel-label" for="{{ select_id }}">Difficulty</label>
+    <select id="{{ select_id }}" class="panel-select puzzle-difficulty">
+        <option value="easiest">Easiest</option>
+        <option value="easier">Easier</option>
+        <option value="normal" selected>Normal</option>
+        <option value="harder">Harder</option>
+        <option value="hardest">Hardest</option>
+    </select>
+</div>

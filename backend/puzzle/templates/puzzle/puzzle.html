@@ -12,23 +12,66 @@
         <div id="board"
              data-pieces="{{ request.user.board_settings.pieces_style|default:'standard' }}"
              data-board="{{ request.user.board_settings.board_style|default:'default' }}"></div>
-        <aside class="side-panel">
-            <section class="play-puzzle">
-                <header class="side-panel-header"><h2>Random Puzzle</h2></header>
+        <aside class="side-panel" id="side-panel">
+            <section id="puzzle-setup-view" class="side-panel-view" data-view="setup">
+                <header class="side-panel-header">
+                    <h2 class="side-panel-title">Random Puzzle</h2>
+                    <p class="side-panel-subtitle">Tactics training</p>
+                </header>
                 <div class="side-panel-body">
-                    <label>Rated
-                        <button type="button" role="switch" class="toggle-button" id="puzzle-rated-toggle"><span class="toggle-knob"></button>
-                    </label>
+                    <p class="side-panel-lead">Solve puzzles to spot winning moves faster in your own games.</p>
+
+                    <h3 class="side-panel-label">How it works</h3>
+                    <ol class="puzzle-steps" role="list">
+                        <li>Press <strong>Start puzzle</strong> to load a new position.</li>
+                        <li>Find the best move in the position.</li>
+                        <li>Some puzzles take a few moves, so keep going until it's solved.</li>
+                    </ol>
+
+                    <p class="side-panel-note">No clock and no rating. Take as long as you need.</p>
+
+                    {% include "puzzle/_difficulty_select.html" with select_id="difficulty-setup" %}
                 </div>
-                <footer class ="side-panel-footer"> 
-                    <button type="button" id="play-button" class="play-button">Play</button>
+                <footer class="side-panel-footer">
+                    <button type="button" id="play-button" class="panel-btn panel-play-btn">Start puzzle</button>
                 </footer>
-            <section>
-            <div class="in-progress">
-                <h2>Puzzle</h2>
-                <p id="puzzle-status">Find the best move.</p>
-            </div>
-        </aside> 
+            </section>
+
+            <section id="puzzle-in-progress-view" class="side-panel-view" data-view="inProgress" hidden>
+                <header class="side-panel-header">
+                    <h2 class="side-panel-title">Random Puzzle</h2>
+                    <p class="side-panel-subtitle">Puzzle rating <span class="puzzle-rating">-</span></p>
+                </header>
+                <div class="side-panel-body">
+                    <div id="puzzle-feedback" class="puzzle-feedback" data-state="playing" aria-live="polite">
+                        <p id="puzzle-status" class="puzzle-status">Your turn</p>
+                        <p id="puzzle-message" class="puzzle-message">Find the best move.</p>
+                    </div>
+                </div>
+                <footer class="side-panel-footer">
+                    <button type="button" id="hint-button" class="panel-btn panel-hint-btn">Hint</button>
+                </footer>
+            </section>
+
+            <section id="puzzle-complete-view" class="side-panel-view" data-view="completed" hidden>
+                <header class="side-panel-header">
+                    <h2 class="side-panel-title">Random Puzzle</h2>
+                    <p class="side-panel-subtitle">Puzzle rating <span class="puzzle-rating">-</span></p>
+                </header>
+                <div class="side-panel-body">
+                    <div class="puzzle-feedback" data-state="solved" aria-live="polite">
+                        <p class="puzzle-status">Solved!</p>
+                        <p id="puzzle-result" class="puzzle-message">You found every move.</p>
+                    </div>
+
+                    {% include "puzzle/_difficulty_select.html" with select_id="difficulty-completed" pinned=True %}
+                </div>
+                <footer class="side-panel-footer">
+                    <button type="button" id="retry-button" class="panel-btn panel-retry-btn">Retry</button>
+                    <button type="button" id="next-button" class="panel-btn panel-play-btn">Next puzzle</button>
+                </footer>
+            </section>
+        </aside>
 
     </div>
 {% endblock %}

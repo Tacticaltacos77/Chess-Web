@@ -66,6 +66,7 @@ header.site-header {
     background-size: calc(var(--size) / 2) calc(var(--size) / 2);
     border-radius: 2px;
 }
+
 .brand-icon-large {
     --size: 2.8rem;
 }
@@ -76,6 +77,9 @@ nav.site-nav {
     gap: 0.25rem;
 
     & a {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
         padding: 0.6rem 0.75rem;
         border-radius: 6px;
         color: color-mix(in srgb, var(--board-light) 70%, transparent);
@@ -93,6 +97,28 @@ nav.site-nav {
             outline: 2px solid var(--accent);
             outline-offset: 2px;
         }
+
+        /* Icon as a mask filled with currentColor, so it dims and brightens with the link text */
+        &::before {
+            content: "";
+            flex: none;
+            width: 1.15rem;
+            height: 1.15rem;
+            background: currentColor;
+            mask: center / contain no-repeat;
+        }
+    }
+
+    & .nav-home::before {
+        mask-image: url("@/assets/icons/house.svg");
+    }
+
+    & .nav-play::before {
+        mask-image: url("@/assets/icons/play.svg");
+    }
+
+    & .nav-puzzle::before {
+        mask-image: url("@/assets/icons/puzzle.svg");
     }
 }
 
@@ -135,6 +161,98 @@ nav.site-nav {
     &:hover {
         filter: brightness(1.15);
     }
+}
+
+/* Profile button on top, small logout button under it on the right */
+.sidebar-account {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    /* Column children stretch to full width by default; flex-end keeps the form its own size, on the right */
+    & form {
+        align-self: flex-end;
+    }
+}
+
+.sidebar-profile-btn {
+    flex: 1;
+    /* Flex items won't shrink below their text by default; this lets a long username truncate
+       instead of pushing the logout button off the sidebar */
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-inline: 0.75rem;
+    background-color: var(--sidebar-brown);
+    color: var(--board-light);
+
+    &:hover {
+        filter: brightness(1.15);
+    }
+
+    &::before {
+        content: "";
+        flex: none;
+        width: 1.1rem;
+        height: 1.1rem;
+        background: currentColor;
+        mask: url("@/assets/icons/user-round.svg") center / contain no-repeat;
+    }
+}
+
+.sidebar-profile-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-logout-btn {
+    display: flex;
+    align-items: center;
+    /* Fixed height; at rest the width is just padding + icon (0.7 + 1.1 + 0.7 = 2.5rem square) */
+    height: 2.5rem;
+    padding: 0 0.7rem;
+    border: none;
+    /* Just a little lighter than the sidebar, so it's visible without competing with the profile button */
+    background-color: color-mix(in srgb, var(--board-light) 8%, var(--ink));
+    color: color-mix(in srgb, var(--board-light) 70%, transparent);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    /* Red on hover, since logging out is the one sidebar action that ends something */
+    &:hover,
+    &:focus-visible {
+        background-color: var(--error);
+        color: white;
+
+        & .sidebar-logout-label {
+            max-width: 5rem;
+            margin-right: 0.5rem;
+        }
+    }
+
+    /* ::after so the icon comes after the label: the button is right-aligned, so it grows
+       to the left and the icon stays put while the text slides out beside it */
+    &::after {
+        content: "";
+        flex: none;
+        width: 1.1rem;
+        height: 1.1rem;
+        background: currentColor;
+        mask: url("@/assets/icons/log-out.svg") center / contain no-repeat;
+    }
+}
+
+/* Collapsed to zero width until hover. Not display: none, so screen readers still read "Log out" */
+.sidebar-logout-label {
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.2s ease, margin-right 0.2s ease;
 }
 
 .site-content {

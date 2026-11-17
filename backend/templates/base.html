@@ -18,14 +18,25 @@
         </a>
         {% with current=request.resolver_match.url_name %}
         <nav class="site-nav" aria-label="Main">
-            <a href="{% url 'home' %}" {% if current == 'home' %}aria-current="page"{% endif %}>Home</a>
-            <a href="{% url 'play' %}" {% if current == 'play' %}aria-current="page"{% endif %}>Play</a>
-            <a href="{% url 'puzzle' %}" {% if current == 'puzzle' %}aria-current="page"{% endif %}>Puzzles</a>
+            <a href="{% url 'home' %}" class="nav-home" {% if current == 'home' %}aria-current="page"{% endif %}>Home</a>
+            <a href="{% url 'play' %}" class="nav-play" {% if current == 'play' %}aria-current="page"{% endif %}>Play</a>
+            <a href="{% url 'puzzle' %}" class="nav-puzzle" {% if current == 'puzzle' %}aria-current="page"{% endif %}>Puzzles</a>
         </nav>
         {% endwith %}
         <div class="sidebar-auth-footer">
         {% if user.is_authenticated %}
-
+            <div class="sidebar-account">
+                {# !!!!Point this at the profile page once it exists #}
+                <a href="#" class="sidebar-btn sidebar-profile-btn">
+                    <span class="sidebar-profile-name">{{ user.username }}</span>
+                </a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="sidebar-btn sidebar-logout-btn">
+                        <span class="sidebar-logout-label">Log out</span>
+                    </button>
+                </form>
+            </div>
         {% else %}
             <a href="{% url 'register' %}" class="sidebar-btn sidebar-register-btn">Register</a>
             <a href="{% url 'login' %}" class="sidebar-btn sidebar-login-btn">Log In</a>

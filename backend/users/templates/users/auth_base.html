@@ -8,6 +8,7 @@
     {% vite_hmr_client %}
     <link rel="stylesheet" href="{% vite_asset_url 'src/base/base.css'%}">
     <link rel="stylesheet" href="{% vite_asset_url 'src/users/auth_base.css' %}">
+    {% vite_asset 'src/users/auth.js' %}
 </head>
 <body>
     <header class="auth-header">
@@ -20,7 +21,12 @@
             {{ form.non_field_errors }}
             {% for field in form %}
                 <div class="form-field">
-                    {{ field }}
+                    <div class="input-wrap">
+                        {{ field }}
+                        {% if field.widget_type == "password" %}
+                            <button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false"></button>
+                        {% endif %}
+                    </div>
                     {{ field.errors }}
                 </div>
             {% endfor %}

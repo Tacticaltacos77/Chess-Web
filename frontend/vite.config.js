@@ -25,6 +25,8 @@ export default defineConfig({
                 home: "src/home/home.js",
                 puzzle: "src/puzzle/main.js",
                 game: "src/game/game.js",
+                auth: "src/users/auth.js",
+                auth_base: "src/users/auth_base.css",
             },
         },
     },

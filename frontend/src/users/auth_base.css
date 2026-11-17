@@ -45,19 +45,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
-    
-
-    & input[name="username"], & input[name="account"] {
-        background: url("@/assets/icons/user-round.svg") 0.5rem center / 1.1rem no-repeat;
-    }
-
-    & input[name="email"] {
-        background: url("@/assets/icons/mail.svg") 0.5rem center / 1.1rem no-repeat;
-    }
-
-    & input[type="password"] {
-        background: url("@/assets/icons/lock-keyhole.svg") 0.5rem center / 1.1rem no-repeat;
-    }
 
     & label {
         font-size: 0.9rem;
@@ -83,6 +70,91 @@ body {
     }
 }
 
+
+/* Wraps each input so the icon and the show/hide button can sit on top of it */
+.input-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    /* The icon is drawn by the wrapper, not as the input's background image:
+       Chrome's autofill style forces background-image: none !important on the input, and pages can't override it */
+    &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0.5rem;
+        translate: 0 -50%;
+        width: 1.1rem;
+        height: 1.1rem;
+        background: var(--ink);
+        mask: center / contain no-repeat;
+        /* Clicks go through to the input underneath */
+        pointer-events: none;
+    }
+
+    &:has(input[name="username"], input[name="account"])::before {
+        mask-image: url("@/assets/icons/user-round.svg");
+    }
+
+    &:has(input[name="email"])::before {
+        mask-image: url("@/assets/icons/mail.svg");
+    }
+
+    /* By name, not type: the show button flips type to "text".
+       ^= matches password, password1 and password2 */
+    &:has(input[name^="password"])::before {
+        mask-image: url("@/assets/icons/lock-keyhole.svg");
+    }
+
+    /* Room on the right so typed text never runs under the show/hide button */
+    &:has(.password-toggle) input {
+        padding-right: 2.75rem;
+    }
+
+    /* Edge adds its own reveal button to password inputs; hide it so there aren't two */
+    & input::-ms-reveal {
+        display: none;
+    }
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.4rem;
+    translate: 0 -50%;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--ink);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--accent);
+    }
+
+    /* The icon is a mask filled with currentColor, so it follows the hover color */
+    &::before {
+        content: "";
+        width: 1.1rem;
+        height: 1.1rem;
+        background: currentColor;
+        mask: url("@/assets/icons/eye.svg") center / contain no-repeat;
+    }
+
+    &[aria-pressed="true"]::before {
+        mask-image: url("@/assets/icons/eye-off.svg");
+    }
+}
 
 .errorlist {
     margin: 0;

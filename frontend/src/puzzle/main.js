@@ -20,8 +20,6 @@ const session = new PuzzleSession($board, {
     onSolved: () => sidepanel.show("completed"),
 });
 
-const COLOR_NAMES = { w: "White", b: "Black" };
-
 function showPuzzleInfo(puzzle) {
     for (const rating of document.querySelectorAll(".puzzle-rating")) {
         rating.textContent = puzzle.rating;

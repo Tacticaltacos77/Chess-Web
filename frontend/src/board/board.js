@@ -20,6 +20,7 @@ const DEFAULT_PIECES = "standard";
 const BOARD_SETS = ["default", "default-contrast", "green", "blue", "chess-club", "black-and-white"];
 const DEFAULT_BOARD = "default";
 
+const COLOR_NAMES = { w: "White", b: "Black" };
 
 const CAPTURE_SOUND = new Audio(heavySoundURL);
 const MOVE_SOUND = new Audio(lightSoundURL);

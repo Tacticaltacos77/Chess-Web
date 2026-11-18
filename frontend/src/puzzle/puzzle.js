@@ -7,7 +7,7 @@ const HINT_MARKER = { class: "marker-hint", slice: "markerSquare" };
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class PuzzleSession extends BoardSession{
-    constructor(element, { pieces, board, onStart, onCorrect, onWrong, onSolved } = {}){
+    constructor(element, { pieces, board, onStart, onCorrect, onWrong, onSolved }){
         super(element, { pieces, board });
         this.moves = [];
         this.onStart = onStart ?? (() => {});

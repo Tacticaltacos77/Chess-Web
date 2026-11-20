@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load django_vite %}
+
+{% block title %}Play locally{% endblock %}
+
+{% block extra_head %}
+    {% vite_asset 'src/game/local.js' %}
+{% endblock %}
+
+{% block content %}
+    <div class="board-layout">
+        {% include "game/_board_area.html" with top_name="Black" bottom_name="White" %}
+        <aside class="side-panel" id="side-panel">
+            <section class="side-panel-view" data-view="inProgress">
+                <header class="side-panel-header">
+                    <h2 class="side-panel-title">Play</h2>
+                    <p class="side-panel-subtitle">Local game</p>
+                </header>
+                <div class="side-panel-body">
+                    <div class="panel-status" aria-live="polite">
+                        <p id="game-turn" class="panel-status-title">White to move</p>
+                    </div>
+                </div>
+                <footer class="side-panel-footer">
+                    <button type="button" id="flip-board-button" class="panel-btn panel-secondary-btn">Flip board</button>
+                    <button type="button" id="restart-button" class="panel-btn panel-play-btn">New game</button>
+                </footer>
+            </section>
+
+            <section class="side-panel-view" data-view="completed" hidden>
+                <header class="side-panel-header">
+                    <h2 class="side-panel-title">Play</h2>
+                    <p class="side-panel-subtitle">Game over</p>
+                </header>
+                <div class="side-panel-body">
+                    <div class="panel-status" aria-live="polite">
+                        <p id="game-result" class="panel-status-title">-</p>
+                        <p id="game-result-reason" class="panel-status-message">-</p>
+                    </div>
+                </div>
+                <footer class="side-panel-footer">
+                    <button type="button" id="new-game-button" class="panel-btn panel-play-btn">New game</button>
+                </footer>
+            </section>
+        </aside>
+    </div>
+    {% include "game/_result_dialog.html" %}
+{% endblock %}

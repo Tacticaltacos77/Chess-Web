@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load django_vite %}
+
+{% block title %}Play{% endblock %}
+
+{% block extra_head %}
+    {% vite_asset 'src/game/play.js' %}
+{% endblock %}
+
+{% block content %}
+    <div class="board-layout">
+        {% include "game/_board_area.html" with top_name="Opponent" bottom_name="You" %}
+        <aside class="side-panel">
+            {# A plain form: Play submits ?mode=..., and the play view redirects to that mode's page #}
+            <form class="side-panel-view" method="get" action="{% url 'play' %}">
+                <header class="side-panel-header">
+                    <h2 class="side-panel-title">Play</h2>
+                    <p class="side-panel-subtitle">Choose a game mode</p>
+                </header>
+                <div class="side-panel-body">
+                    {# Radio buttons, so only one mode can be picked and arrow keys move between them #}
+                    <fieldset class="mode-options">
+                        <legend class="side-panel-label">Game mode</legend>
+                        <label class="mode-option">
+                            <input type="radio" name="mode" value="online" checked>
+                            <span class="mode-option-title">Play online</span>
+                            <span class="mode-option-text">Untimed game against another player.</span>
+                        </label>
+                        <label class="mode-option">
+                            <input type="radio" name="mode" value="local">
+                            <span class="mode-option-title">Play local</span>
+                            <span class="mode-option-text">Two players take turns on this board.</span>
+                        </label>
+                    </fieldset>
+                </div>
+                <footer class="side-panel-footer">
+                    <button class="panel-btn panel-play-btn">Play</button>
+                </footer>
+            </form>
+        </aside>
+    </div>
+{% endblock %}

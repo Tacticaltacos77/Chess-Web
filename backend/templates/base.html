@@ -19,7 +19,7 @@
         {% with current=request.resolver_match.url_name %}
         <nav class="site-nav" aria-label="Main">
             <a href="{% url 'home' %}" class="nav-home" {% if current == 'home' %}aria-current="page"{% endif %}>Home</a>
-            <a href="{% url 'play' %}" class="nav-play" {% if current == 'play' %}aria-current="page"{% endif %}>Play</a>
+            <a href="{% url 'play' %}" class="nav-play" {% if current == 'play' or current == 'play_online' or current == 'play_local' %}aria-current="page"{% endif %}>Play</a>
             <a href="{% url 'puzzle' %}" class="nav-puzzle" {% if current == 'puzzle' %}aria-current="page"{% endif %}>Puzzles</a>
         </nav>
         {% endwith %}

@@ -1,0 +1,13 @@
+<div class="board-area">
+    <div id="player-top" class="player-bar">
+        <span class="player-avatar"></span>
+        <span class="player-name">{{ top_name|default:"Player 2" }}</span>
+    </div>
+    <div id="board"
+         data-pieces="{{ request.user.board_settings.pieces_style|default:'standard' }}"
+         data-board="{{ request.user.board_settings.board_style|default:'default' }}"></div>
+    <div id="player-bottom" class="player-bar">
+        <span class="player-avatar"></span>
+        <span class="player-name">{{ bottom_name|default:"Player 1" }}</span>
+    </div>
+</div>

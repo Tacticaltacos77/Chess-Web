@@ -1,0 +1,35 @@
+
+main.site-main {
+    --page-pad: 1rem;
+    max-width: 1800px;
+    padding: var(--page-pad) 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.board-layout {
+    --panel-min: 300px;
+    --gap: 1.5rem;
+    display: flex;
+    gap: var(--gap);
+    justify-content: center;
+}
+
+
+.board-area {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    width: min(
+        calc(100dvh - 2 * var(--page-pad) - var(--board-extras, 0px)),
+        calc(100% - var(--panel-min) - var(--gap))
+    );
+}
+
+@media (max-width: 768px) {
+    main.site-main { justify-content: flex-start; }
+    .board-layout { flex-direction: column; }
+    .board-layout .board-area { width: 100%; }
+    .board-layout .side-panel { flex: none; width: 100%; max-width: none; }
+}

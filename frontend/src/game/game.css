@@ -1,0 +1,40 @@
+.board-area {
+    --player-bar-height: 2.5rem;
+    --player-bar-gap: 0.5rem;
+    --board-extras: calc(2 * (var(--player-bar-height) + var(--player-bar-gap)));
+    gap: var(--player-bar-gap);
+}
+
+.player-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    height: var(--player-bar-height);
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.player-avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: var(--player-bar-height);
+    height: var(--player-bar-height);
+    border-radius: 6px;
+    background: var(--board-light);
+    color: var(--board-dark);
+
+    &::before {
+        content: "";
+        width: 60%;
+        height: 60%;
+        background: currentColor;
+        mask: url("@/assets/icons/user-round.svg") center / contain no-repeat;
+    }
+}
+
+.player-name {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}

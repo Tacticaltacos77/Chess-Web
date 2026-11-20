@@ -1,0 +1,67 @@
+.result-dialog {
+    width: min(22rem, calc(100vw - 2rem));
+    /* Padding goes on the form instead, so every click inside counts as "inside" (see result-dialog.js) */
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.25);
+
+    &::backdrop {
+        /* --ink at 45%. Written out because older browsers don't pass :root variables to ::backdrop */
+        background: rgb(43 35 32 / 0.45);
+    }
+
+    & form {
+        padding: 2rem 2.5rem 1.75rem;
+        text-align: center;
+    }
+}
+
+/* An open modal dialog is position: fixed, so this sits in the dialog's top right corner */
+.result-dialog-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+
+    /* Icon as a mask filled with currentColor, same as the sidebar icons */
+    &::before {
+        content: "";
+        width: 1.25rem;
+        height: 1.25rem;
+        background: currentColor;
+        mask: url("@/assets/icons/x.svg") center / contain no-repeat;
+    }
+
+    &:hover {
+        background: var(--surface-alt);
+        color: var(--ink);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+    }
+}
+
+.result-dialog-title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.result-dialog-message {
+    margin: 0.35rem 0 0;
+    color: var(--ink-soft);
+}

@@ -95,6 +95,35 @@
     }
 }
 
+.panel-status {
+    --state-color: var(--ink-soft);
+    padding: 0.9rem 1rem;
+    border-left: 4px solid var(--state-color);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--state-color) 8%, var(--surface));
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    &[data-state="success"] {
+        --state-color: var(--accent);
+    }
+
+    &[data-state="error"] {
+        --state-color: var(--error);
+    }
+}
+
+.panel-status-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.panel-status-message {
+    margin: 0.25rem 0 0;
+    color: var(--ink-soft);
+}
+
 .side-panel-footer {
     display: flex;
     gap: 0.5rem;
@@ -115,6 +144,9 @@
     border-radius: 6px;
     cursor: pointer;
     transition: filter 0.15s ease;
+    /* So an <a> styled as a button (like Cancel on the online page) looks the same as a <button> */
+    text-align: center;
+    text-decoration: none;
 
     &:focus-visible {
         outline: 2px solid var(--ink);
@@ -132,6 +164,7 @@
     }
 }
 
+.panel-secondary-btn,
 .panel-retry-btn,
 .panel-hint-btn {
     color: var(--ink);

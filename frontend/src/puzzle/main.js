@@ -1,4 +1,5 @@
 import { PuzzleSession } from "./puzzle.js";
+import { COLOR_NAMES } from "../board/board";
 import { SidePanel } from "../components/sidepanel/panel.js";
 import "./puzzle.css";
 import { getCasualPuzzle } from "./api.js";

@@ -1,7 +1,7 @@
 import { Chessboard, INPUT_EVENT_TYPE, FEN } from "cm-chessboard/src/Chessboard.js";
 import { Markers } from "cm-chessboard/src/extensions/markers/Markers.js";
 import { PromotionDialog, PROMOTION_DIALOG_RESULT_TYPE } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog.js";
-import { Chess, validateFen } from "chess.js";
+import { Chess, DEFAULT_POSITION } from "chess.js";
 import "cm-chessboard/assets/chessboard.css";
 import "cm-chessboard/assets/extensions/markers/markers.css";
 import "cm-chessboard/assets/extensions/promotion-dialog/promotion-dialog.css";
@@ -20,7 +20,7 @@ const DEFAULT_PIECES = "standard";
 const BOARD_SETS = ["default", "default-contrast", "green", "blue", "chess-club", "black-and-white"];
 const DEFAULT_BOARD = "default";
 
-const COLOR_NAMES = { w: "White", b: "Black" };
+export const COLOR_NAMES = { w: "White", b: "Black" };
 
 const CAPTURE_SOUND = new Audio(heavySoundURL);
 const MOVE_SOUND = new Audio(lightSoundURL);
@@ -62,10 +62,27 @@ export class BoardSession {
         sound.play().catch((err) => console.warn("Move sound didn't play:", err));
 
         this.syncBoard();
+        if (this.game.isGameOver()) {
+            const result = this.getGameResult();
+            this.onGameOver(result);
+        }
         return moveObj;
     }
 
-  
+    getGameResult(){
+        const DRAW = "1/2-1/2";
+        if (this.game.isCheckmate()) {
+            const result = this.game.turn() === "w" ? "0-1" : "1-0";
+            return { result, reason: "checkmate" };
+        }
+        if (this.game.isStalemate()) return { result: DRAW, reason: "stalemate" };
+        if (this.game.isThreefoldRepetition()) return { result: DRAW, reason: "repetition" };
+        if (this.game.isInsufficientMaterial()) return { result: DRAW, reason: "insufficient material" };
+        if (this.game.isDrawByFiftyMoves()) return { result: DRAW, reason: "50-move rule" };
+        // "*" is PGN for a game still in progress
+        return { result: "*", reason: null };
+    }
+
     syncBoard(animate = true) {
         this.board.setPosition(this.game.fen(), animate);
         this.showLastMove();
@@ -102,7 +119,12 @@ export class BoardSession {
         return board_style;
     }
 
-    loadPosition(fen){
+    flipBoard() {
+        const flipped = this.board.getOrientation() === "w" ? "b" : "w";
+        return this.board.setOrientation(flipped, true);
+    }
+
+    loadPosition(fen=DEFAULT_POSITION){
         this.game.load(fen);
         this.syncBoard(false);
     }
@@ -156,6 +178,9 @@ export class BoardSession {
 
     // Subclasses override this to react to the users moves
     onUserMove(move) {}
+
+    // Subclasses override this to react to the game ending. result is from getGameResult
+    onGameOver(result) {}
 
     isPromotion(from, to){
         return this.game.moves({ square: from, verbose: true })
